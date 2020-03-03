@@ -9,6 +9,7 @@ cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 cookbook 'conda', github: "logicalclocks/conda-chef", branch: "master"
 cookbook 'kzookeeper', github: "logicalclocks/kzookeeper", branch: "master"
 cookbook 'elastic', github: "logicalclocks/elasticsearch-chef", branch: "master"
+cookbook 'livy', github: "logicalclocks/livy-chef", branch: "master"
 
 cookbook 'magic_shell'
 cookbook 'sysctl', '~> 1.0.3'

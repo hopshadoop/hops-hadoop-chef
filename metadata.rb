@@ -29,6 +29,7 @@ depends 'magic_shell'
 depends 'sysctl'
 depends 'cmake'
 depends 'kzookeeper'
+depends 'livy'
 
 %w{ ubuntu debian rhel centos }.each do |os|
   supports os

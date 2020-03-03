@@ -1,4 +1,5 @@
 include_recipe "hops::default"
+include_recipe "livy::install"
 
 template_ssl_server()
 
