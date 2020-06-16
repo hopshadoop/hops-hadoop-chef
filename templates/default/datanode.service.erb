@@ -6,6 +6,7 @@ After = syslog.target network.target remote-fs.target <%= @deps %>
 User = <%= node['hops']['hdfs']['user'] %>
 
 PIDFile = <%= node['hops']['logs_dir'] %>/hadoop-<%= node['hops']['hdfs']['user'] %>-datanode.pid
+# ExecStartPre = # check that the ZFS file is 
 ExecStart = <%= node['hops']['base_dir'] %>/sbin/start-dn.sh
 ExecStop = <%= node['hops']['base_dir'] %>/sbin/stop-dn.sh
 ExecReload = <%= node['hops']['base_dir'] %>/sbin/restart-dn.sh

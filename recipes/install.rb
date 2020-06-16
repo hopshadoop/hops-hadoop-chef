@@ -131,7 +131,7 @@ end
 
 group node['hops']['group'] do
   action :modify
-  members [node['hops']['hdfs']['user'], node['hops']['yarn']['user'], node['hops']['mr']['user'], node['hops']['yarnapp']['user'], node['hops']['rm']['user']]
+  members [node['hops']['hdfs']['user'], node['hops']['yarn']['user'], node['hops']['mr']['user'], node['hops']['yarnapp']['user'], node['hops']['rm']['user']], node['kagent']['certs_user']]
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
@@ -243,7 +243,6 @@ if "#{node['hops']['dn']['data_dir']}".include? ","
            mkdir -p #{dir}
            chown #{node['hops']['hdfs']['user']}:#{node['hops']['group']} #{dir}
         fi
-        # chown -R #{node['hops']['hdfs']['user']}:#{node['hops']['group']} #{dir}
       EOH
     end
    end

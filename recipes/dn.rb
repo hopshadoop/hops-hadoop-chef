@@ -11,6 +11,24 @@ for script in node['hops']['dn']['scripts']
   end
 end 
 
+#
+# ZFS datadir may need to be createed/mounted by kagent
+# Need to make sure it has correct owner/permissions
+#
+
+dd=node['hops']['dn']['data_dir']
+dataDir=dd.gsub("file://","")
+dirs = dataDir.split(",")
+
+for d in dirs do
+  directory d do
+    owner node['hops']['hdfs']['user']
+    group node['hops']['group']
+    mode "0770"
+    action :create
+  end
+end
+
 cookbook_file "#{node['hops']['conf_dir']}/datanode.yaml" do 
   source "metrics/datanode.yaml"
   owner node['hops']['hdfs']['user']
@@ -25,6 +43,16 @@ end
 if exists_local("hops", "nn") 
   deps += "namenode.service "
 end  
+
+
+# wait for kagent to start if the datadirs are encrypted with ZFS
+# kagent will mount and unlock the datadir before the datanode starts
+if node.attribute?("zfs") && node["zfs"].attribute?("pools")
+  if node['zfs']['pools'].empty? == false
+    deps = "kagent.service " + deps
+  end
+end
+
 
 service_name="datanode"
 
@@ -55,7 +83,7 @@ if node['hops']['systemd'] == "true"
     group "root"
     mode 0664
     variables({
-              :deps => deps
+                :deps => deps
               })
 if node['services']['enabled'] == "true"
     notifies :enable, "service[#{service_name}]"
