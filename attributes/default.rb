@@ -422,10 +422,6 @@ default['hops']['yarnapp']['home_dir']                 = "/home"
 #Store Small files in NDB
 default['hops']['small_files']['store_in_db']                                       = "true"
 default['hops']['small_files']['max_size']                                          = 65536
-default['hops']['small_files']['on_disk']['max_size']['small']                      = 2000
-default['hops']['small_files']['on_disk']['max_size']['medium']                     = 4000
-default['hops']['small_files']['on_disk']['max_size']['large']                      = 65536
-default['hops']['small_files']['in_memory']['max_size']                             = 1024
 
 default['hopsmonitor']['default']['private_ips']                                    = ['10.0.2.15']
 default['hopsworks']['default']['private_ips']                                      = ['10.0.2.15']
