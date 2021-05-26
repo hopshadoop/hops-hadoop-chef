@@ -105,12 +105,42 @@ if node['hops']['gpu'].eql?("true")
 end
 
 if !node['hops']['docker_dir'].eql?("/var/lib/docker")
-  directory node['hops']['docker_dir'] do
+  directory node['hops']['data_volume']['docker'] do
     owner 'root'
     group 'root'
     mode '0711'
     recursive true
     action :create
+  end
+
+  systemd_unit "docker.service" do
+    action :stop
+    only_if { conda_helpers.is_upgrade }
+    only_if { File.directory?(node['hops']['docker_dir'])}
+    not_if { File.symlink?(node['hops']['docker_dir'])}
+    notifies :run, 'bash[move-docker-images]', :immediately
+  end
+
+  bash 'move-docker-images' do
+    user 'root'
+    code <<-EOH
+      set -e
+      mv -f #{node['hops']['docker_dir']}/* #{node['hops']['data_volume']['docker']}
+      rm -rf #{node['hops']['docker_dir']}
+    EOH
+    action :nothing
+    notifies :start, 'systemd_unit[docker.service]', :immediately
+  end
+
+  systemd_unit "docker.service" do
+    action :nothing
+  end
+
+  link node['hops']['docker_dir'] do
+    owner 'root'
+    group 'root'
+    mode '0711'
+    to node['hops']['data_volume']['docker']
   end
 end
 

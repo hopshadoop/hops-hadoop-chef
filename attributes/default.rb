@@ -31,6 +31,12 @@ default['hops']['dir']                         = node['install']['dir'].empty? ?
 default['hops']['base_dir']                    = node['hops']['dir'] + "/hadoop"
 default['hops']['home']                        = node['hops']['dir'] + "/hadoop-" + node['hops']['version']
 
+# Directories in data volume
+default['hops']['data_volume']['root_dir']     = "#{node['data']['dir']}/hops"
+default['hops']['data_volume']['data_dir']     = "#{node['hops']['data_volume']['root_dir']}/hopsdata"
+default['hops']['data_volume']['logs_dir']     = "#{node['hops']['data_volume']['root_dir']}/logs"
+default['hops']['data_volume']['docker']       = "#{node['data']['dir']}/docker"
+
 default['hops']['sbin_dir']                    = node['hops']['base_dir'] + "/sbin"
 default['hops']['bin_dir']                     = node['hops']['base_dir'] + "/bin"
 default['hops']['data_dir']                    = node['hops']['dir'] + "/hopsdata"
