@@ -3,10 +3,6 @@ require 'etc'
 include_recipe "hops::_config"
 include_recipe "java"
 
-if node['hops']['docker']['enabled'].eql?("true")
-  include_recipe "hops::docker"
-end
-
 if node['hops']['nn']['direct_memory_size'].to_i < node['hops']['nn']['heap_size'].to_i
   raise "Invalid Configuration. Set Java DirectByteBuffer memory as high as Java heap size otherwise, the NNs might experience severe GC pauses."
 end
@@ -250,6 +246,45 @@ directory node['hops']['dir'] do
   action :create
 end
 
+directory node['data']['dir'] do
+  owner 'root'
+  group 'root'
+  mode '0775'
+  action :create
+  not_if { ::File.directory?(node['data']['dir']) }
+end
+
+directory node['hops']['data_volume']['data_dir'] do
+  owner node['hops']['hdfs']['user']
+  group node['hops']['group']
+  mode "0770"
+  recursive true
+  action :create
+end
+
+bash 'Move Hops hopsdata to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['hops']['data_dir']}/* #{node['hops']['data_volume']['data_dir']}
+    rm -rf #{node['hops']['data_dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['hops']['data_dir'])}
+  not_if { File.symlink?(node['hops']['data_dir'])}
+end
+
+link node['hops']['data_dir'] do
+  owner node['hops']['hdfs']['user']
+  group node['hops']['group']
+  mode "0770"
+  to node['hops']['data_volume']['data_dir']
+end
+
+if node['hops']['docker']['enabled'].eql?("true")
+  include_recipe "hops::docker"
+end
+
 dd=node['hops']['data_dir']
 dataDir=dd.gsub("file://","")
 
@@ -354,11 +389,30 @@ bash 'chown-sbin' do
   EOH
 end
 
-directory node['hops']['logs_dir'] do
+directory node['hops']['data_volume']['logs_dir'] do
   owner node['hops']['hdfs']['user']
   group node['hops']['group']
-  mode "0770"
+  mode '0770'
   action :create
+end
+
+bash 'Move Hops logs to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['hops']['logs_dir']}/* #{node['hops']['data_volume']['logs_dir']}
+    rm -rf #{node['hops']['logs_dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['hops']['logs_dir'])}
+  not_if { File.symlink?(node['hops']['logs_dir'])}
+end
+
+link node['hops']['logs_dir'] do
+  owner node['hops']['hdfs']['user']
+  group node['hops']['group']
+  mode '0770'
+  to node['hops']['data_volume']['logs_dir']
 end
 
 # Touch file with correct ownership and permission
