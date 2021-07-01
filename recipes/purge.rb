@@ -60,14 +60,9 @@ directory Chef::Config.file_cache_path do
 end
 
 package "Bouncy Castle Remove" do
-  case node['platform']
-  when 'redhat', 'centos'
-    package_name 'bouncycastle'
-  when 'ubuntu', 'debian'
-    package_name 'bouncycastle'
-  end
- ignore_failure true
- action :purge
+  package_name 'bouncycastle'
+  ignore_failure true
+  action :purge
 end
 
 

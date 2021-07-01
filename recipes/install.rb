@@ -52,6 +52,13 @@ if node['platform_family'].eql?("redhat")
       echo "never" > /sys/kernel/mm/redhat_transparent_hugepages/defrag
      EOF
   end
+elsif node['platform_family'].eql?("amazon")
+  bash "configure_os" do
+     user "root"
+     code <<-EOF
+      echo "never" > /sys/kernel/mm/transparent_hugepages/defrag
+     EOF
+  end
 end
 
 # We need to change the group from the previous ID to the new one during an upgrade

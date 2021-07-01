@@ -33,7 +33,7 @@ depends 'elastic'
 depends 'consul'
 depends 'java'
 
-%w{ ubuntu debian rhel centos }.each do |os|
+%w{ ubuntu debian rhel centos amazon }.each do |os|
   supports os
 end
 
