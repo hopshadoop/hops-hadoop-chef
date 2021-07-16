@@ -67,6 +67,11 @@ default['hops']['hdfs']['umask']               = "0007"
 default['hops']['root_url']                    = node['download_url']
 default['hops']['dist_url']                    = node['hops']['root_url'] + "/hops-" + node['hops']['version'] + ".tgz"
 
+default['hops']['fuse']['dist_url']            = node['hops']['root_url'] + "/hops-fuse-mount-" + node['hops']['version'] 
+default['hops']['fuse']['staging_folder']      = node['hops']['dir'] + "/hops-staging"
+default['hops']['fuse']['mount_point']         = node['hops']['dir'] + "/hopsfs-mount-point" 
+
+
 default['hops']['install_protobuf']            = "false"
 default['hops']['protobuf_url']                = "https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.gz"
 default['hops']['hadoop_src_url']              = "https://archive.apache.org/dist/hadoop/core/hadoop-" + node['hops']['version'] + "/hadoop-" + node['hops']['version'] + "-src.tar.gz"

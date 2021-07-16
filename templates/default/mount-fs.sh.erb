@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+#set -e
+
+mount_bin="<%= @fuse_mount_bin %>"
+common_params="--stageDir <%= node['hops']['fuse']['staging_folder'] %>  <%= @nn_address %>:<%= node['hops']['nn']['port'] %>  <%= node['hops']['fuse']['mount_point'] %>  > <%=node['hops']['logs_dir']%>/fuse-mount.log 2>&1"
+
+<% if node['hops']['tls']['enabled'].eql? "true" -%>
+command="$mount_bin  -tls $common_params"
+<% else %>
+command="$mount_bin  $common_params"
+<% end %>
+
+
+PIDFile=<%= node['hops']['logs_dir'] %>/hadoop-<%= node['hops']['hdfs']['user'] %>-hopsfsmount.pid
+bash -c "nohup $command &"
+pid=$(pgrep hops-fuse-mount)
+echo $pid > $PIDFile
+
+
+

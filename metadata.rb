@@ -883,3 +883,16 @@ attribute "hops/nn/audit_log",
 attribute "hops/rm/audit_log",
           :description =>  "Enable audit logs for Yarn RM (default false)",
           :type => 'string'
+
+attribute "hops/fuse/dist_url",
+          :description =>  "Location of HopsFS fuse mount binary",
+          :type => 'string'
+
+attribute "hops/fuse/staging_folder",
+          :description =>  "Directory to store temp files",
+          :type => 'string'
+
+attribute "hops/fuse/mount_point",
+          :description =>  "Directory to mount the filesystem",
+          :type => 'string'
+
